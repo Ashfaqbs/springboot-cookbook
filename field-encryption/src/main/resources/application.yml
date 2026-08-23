@@ -1,0 +1,42 @@
+spring:
+  datasource:
+    # H2 in PostgreSQL compatibility mode — schema SQL is portable to real PostgreSQL
+    url: jdbc:h2:mem:tododb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;NON_KEYWORDS=VALUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+
+  jpa:
+    hibernate:
+      # IMPORTANT: Flyway owns the schema. Hibernate must never alter it.
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console   # visit http://localhost:8080/h2-console while running
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+# ─── Encryption keys ────────────────────────────────────────────────────────
+# Both keys must be exactly 32 bytes (32 ASCII chars here).
+# NEVER commit real keys. In production, inject via environment variables:
+#   ENCRYPTION_KEY=...
+#   ENCRYPTION_HMAC_KEY=...
+encryption:
+  key: "0123456789abcdef0123456789abcdef"       # AES-256 key  (32 bytes)
+  hmac-key: "fedcba9876543210fedcba9876543210"  # HMAC key (32 bytes)
+  hmac-algorithm: HmacSHA256                    # options: HmacSHA256, HmacSHA384, HmacSHA512
+  # WARNING: changing hmac-algorithm after data exists invalidates all existing blind indexes.
+  # All stored hash values must be recomputed before searches work again.
+
+logging:
+  level:
+    com.example.todo: DEBUG
+    org.flywaydb: INFO
