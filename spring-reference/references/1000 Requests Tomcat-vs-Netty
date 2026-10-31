@@ -1,0 +1,406 @@
+let’s break this down step by step — from request to object creation and garbage collection — in a Spring Boot application:
+
+---
+
+###  Context Assumption:
+
+* Application: **Spring Boot (Java 21)**
+* API: Stateless (like REST)
+* Endpoint: Accepts requests (e.g., `/process`), does some logic, and returns a response
+* Server: **Tomcat embedded** (default)
+* Concurrent users: **100 users simultaneously calling the API**
+
+---
+
+##  What gets created when 100 users hit the API?
+
+### 1. **Thread per request (Servlet model)**
+
+Spring Boot (via Tomcat) uses a **thread-per-request** model.
+
+* Default thread pool size: **200** (`server.tomcat.threads.max`)
+* So, 100 users → 100 threads created/used from the pool
+* Each thread handles **one request**
+
+ **Total: 100 threads in use temporarily**
+
+---
+
+###  2. **Request-specific objects**
+
+For **each incoming request**, these are created:
+
+| Object Type                         | Per Request? | Lifecycle                   |
+| ----------------------------------- | ------------ | --------------------------- |
+| `HttpServletRequest` and `Response` | ✅ Yes        | Destroyed after response    |
+| Request Body (POJO / DTO)           | ✅ Yes        | Created and discarded       |
+| Business objects (local variables)  | ✅ Yes        | GC eligible after method    |
+| Controller class                    | ❌ No         | Singleton (1 instance only) |
+| Service class                       | ❌ No         | Singleton                   |
+| Repository / DB layer               | ❌ No         | Singleton or Prototype      |
+
+So for 100 users:
+
+* If each request uses a DTO and some local processing objects → 100 **unique sets** of those objects
+
+---
+
+###  3. **Connection pool (e.g., JDBC via HikariCP)**
+
+If calling the database:
+
+* HikariCP maintains a **pool of connections**, not 100 new ones
+* E.g., 10–20 connections reused for 100 requests (if configured)
+
+---
+
+###  4. **What if some requests are still processing?**
+
+If:
+
+* 60 requests completed
+* 40 are still running
+
+Then:
+
+* 60 request objects → already **eligible for GC**
+* 40 request objects → still in **active memory**
+
+---
+
+##  What gets GC’ed (Garbage Collected)?
+
+* Java GC **automatically cleans up** objects no longer referenced.
+* Request-specific DTOs, local variables, etc. are cleaned once:
+
+  * Response is sent
+  * Thread is returned to the pool
+  * No longer reachable from any live thread
+
+---
+
+###  Summary:
+
+| Category                            | Count for 100 Requests         |
+| ----------------------------------- | ------------------------------ |
+| Threads used                        | 100 (from thread pool)         |
+| Controller objects                  | 1 (singleton)                  |
+| Service/Repo beans                  | 1 each (singleton)             |
+| Request DTOs / locals               | 100                            |
+| Active (not yet completed) requests | Only those are alive in memory |
+
+---
+
+### Bonus Tip: Use `@RequestScope` if you want objects per request (not common)
+
+```java
+@Bean
+@RequestScope
+public MyPerRequestObject obj() {
+    return new MyPerRequestObject();
+}
+```
+
+## **1000 concurrent users** hitting your Spring Boot API.
+
+---
+
+##  What Happens at 1000 Requests?
+
+###  **1. Thread Pool Behavior**
+
+Spring Boot (Tomcat) default:
+
+```yaml
+server.tomcat.threads.max=200
+server.tomcat.threads.min-spare=10
+```
+
+* Only **200 threads** can serve requests at once.
+* The **remaining 800** are **queued** (by default in a **request queue**).
+
+If queue overflows (default 100), you'll get:
+
+```
+HTTP 503 Service Unavailable
+```
+
+---
+
+###  So, at 1000 requests:
+
+| Request State       | Count         | Explanation                               |
+| ------------------- | ------------- | ----------------------------------------- |
+| Actively processing | 200           | 1 thread/request, max concurrent          |
+| Waiting in queue    | 100 (default) | Using Tomcat’s connection queue           |
+| Rejected            | 700           | Dropped if queue overflows (`503` errors) |
+
+**Unless configured**, you can’t serve all 1000 in parallel.
+
+You can increase this in `application.yml`:
+
+```yaml
+server.tomcat.threads.max: 500
+server.tomcat.accept-count: 1000  # queue size
+```
+
+---
+
+##  What objects are created now?
+
+Assuming:
+
+* Each request uses a **DTO**, **some business logic**, and **hits DB**
+
+###  Per **completed or processing** request:
+
+| Object Type                  | Approx Count (for 1000 reqs) | Scope         |
+| ---------------------------- | ---------------------------- | ------------- |
+| Request/Response Wrappers    | 1000                         | GC after done |
+| Input DTOs (e.g., `UserDTO`) | 1000                         | GC after done |
+| Local processing objects     | 1000                         | GC after done |
+| Threads                      | **Max 200**                  | Reused        |
+| Controller/Service Beans     | 1 each                       | Singleton     |
+
+🔁 Objects for **completed** requests are GC’d
+🔁 **Only active 200 threads hold memory live**
+The rest are:
+
+* Waiting (not using CPU, minimal memory)
+* Or dropped (if queue full)
+
+---
+
+##  Memory Pressure?
+
+Yes, but **Java handles short-lived objects well**:
+
+* These request-local objects live in **young generation (Eden space)**.
+* Java’s GC (like G1GC, default in JDK 21) can efficiently clean them up in batches.
+
+Still, if requests are:
+
+* **Heavy** (e.g., large payloads, big processing),
+* Or **leaking** (e.g., holding objects in static collections),
+
+…then you’ll feel **GC pause** or even **OutOfMemoryError**.
+
+---
+
+##  Monitoring Tools
+
+For 1000 load test, **always track**:
+
+| Tool                    | Usage                        |
+| ----------------------- | ---------------------------- |
+| `jvisualvm`, `jconsole` | Object count, memory usage   |
+| `actuator/metrics`      | Thread pool, request rates   |
+| `prometheus + grafana`  | Dashboards + alerts          |
+| `heap dumps`            | Investigate retained objects |
+
+---
+
+##  Optimization Options
+
+| Strategy                           | Impact                          |
+| ---------------------------------- | ------------------------------- |
+| Increase `maxThreads`              | Handle more concurrent requests |
+| Tune `acceptCount`                 | Avoid dropping early            |
+| Use async (WebFlux)                | Non-blocking, scales better     |
+| Pool heavy objects (e.g., buffers) | Avoid per-request creation      |
+| Enable connection pool tuning      | Reduce DB object churn          |
+
+---
+
+## TL;DR
+
+### 1000 Requests:
+
+* **1000 sets of request objects** → short-lived, GC-friendly
+* Only **200 threads live** at a time
+* All controller/service/repo objects are **shared singletons**
+
+---
+
+- Internal which are one time and n time objects : 
+
+---
+
+##  What does `@Singleton` mean in Spring Boot?
+
+### 🔹 Layman Analogy:
+
+Imagine a **coffee machine (singleton)** in an office.
+
+* 100 employees (requests) use it.
+* Only **1 coffee machine** exists.
+* Everyone shares it.
+  They don’t create a new machine per coffee!
+
+---
+
+### Technical Explanation:
+
+Spring Boot (using Spring container) **creates one instance** of:
+
+* `@Controller`
+* `@Service`
+* `@Repository`
+  …and keeps it in the **ApplicationContext**.
+
+When **1000 users** hit your API:
+
+* All those requests are **served by the same singleton beans**
+* Local data is stored per thread, not inside the singleton itself
+
+So YES:
+
+> **N requests (1000, 10k, whatever) all use the same 1 singleton bean**
+
+---
+
+##  Important Clarification
+
+###  Don’t put request-specific data in singleton fields:
+
+```java
+@Service
+public class BadService {
+    private String username; // ❌ BAD: shared across all threads
+}
+```
+
+This creates race conditions — data from one request leaks into another.
+
+---
+
+###  Do this instead (safe):
+
+```java
+@Service
+public class GoodService {
+    public String greet(String username) {
+        return "Hello " + username;
+    }
+}
+```
+
+* All data passed in **method arguments**
+* No shared mutable fields
+* Fully **thread-safe**
+
+---
+
+##  Summary Table
+
+| Component       | Scope       | How many instances? | Thread-safe?          |
+| --------------- | ----------- | ------------------- | --------------------- |
+| `@Controller`   | Singleton   | 1 shared            | Yes, if stateless     |
+| `@Service`      | Singleton   | 1 shared            | Yes, if stateless     |
+| `@Repository`   | Singleton   | 1 shared            | Yes                   |
+| Request DTO     | Per request | 1 per request       | No sharing            |
+| Local variables | Per request | Reside in thread    | Thread-specific stack |
+
+
+
+
+-  now we’re talking **WebFlux**, which changes **how concurrency and object creation** are handled fundamentally.
+
+---
+
+##  Spring MVC vs Spring WebFlux — Big Picture
+
+| Feature                 | Spring MVC (Tomcat)            | Spring WebFlux (Netty)          |
+| ----------------------- | ------------------------------ | ------------------------------- |
+| Concurrency model       | **Thread-per-request**         | **Event loop + non-blocking**   |
+| Threads used (per 1000) | \~1000 (or thread pool max)    | \~4–8 (default event loop size) |
+| API design              | Imperative (`@RestController`) | Reactive (`Mono`, `Flux`)       |
+| Default server          | Tomcat                         | Netty                           |
+
+---
+
+## 💡 Layman Analogy
+
+###  Spring MVC (Traditional):
+
+Like opening **1000 checkout counters** in a supermarket — each request gets a person (thread).
+
+###  Spring WebFlux:
+
+Like having **few self-checkout machines** (event loops) that handle 1000 customers **asynchronously**.
+Each machine (thread) handles many customers by **not waiting** for payment, printing, etc.
+
+---
+
+##  What happens in WebFlux when 1000 users call?
+
+###  Thread Count:
+
+* You **don’t** need 1000 threads.
+* WebFlux uses:
+
+  * **Few CPU-bound threads** (event loop)
+  * **Non-blocking IO threads**
+* Only **reacts** to events: when data is ready, when response is available, etc.
+
+ So for 1000 concurrent users:
+
+* WebFlux might run on **8–20 threads total**, not 1000
+* That means **fewer objects in memory**
+
+---
+
+##  Object Creation in WebFlux (Per Request)
+
+| Object/Bean Type          | Scope       | How Many? (1000 reqs) | Explanation                   |
+| ------------------------- | ----------- | --------------------- | ----------------------------- |
+| `@RestController`         | Singleton   | 1                     | Same as MVC                   |
+| `@Service`, `@Repository` | Singleton   | 1                     | Same                          |
+| `Mono`, `Flux`            | Per request | 1000                  | Reactive wrappers per request |
+| Local processing objects  | Per request | 1000                  | GC'ed quickly                 |
+| Threads                   | Shared      | \~8–20                | Shared across all requests    |
+
+---
+
+##  Key Differences from MVC
+
+| Topic                   | Spring MVC                     | WebFlux                        |
+| ----------------------- | ------------------------------ | ------------------------------ |
+| Blocking calls          | Allowed (e.g., `Thread.sleep`) | ❌ Should be avoided            |
+| Thread per request      | ✅ Yes                          | ❌ No (event loop handles many) |
+| GC pressure             | Higher (more short-lived objs) | Lower                          |
+| Throughput (under load) | Lower                          | Much higher                    |
+| Memory usage            | Higher                         | Lower (fewer threads)          |
+
+---
+
+## Gotchas in WebFlux
+
+* **Blocking calls kill performance** — even one `Thread.sleep()` can block the event loop
+* Use **non-blocking drivers** (like `R2DBC`, `WebClient`, not `RestTemplate`)
+* Logging, DB, file I/O — must all be async to reap the benefit
+
+---
+
+##  Example Controller in WebFlux
+
+```java
+@RestController
+public class GreetController {
+
+    @GetMapping("/hello")
+    public Mono<String> hello() {
+        return Mono.just("Hello Reactive World!");
+    }
+}
+```
+
+---
+
+## TL;DR
+
+* In WebFlux, **singleton beans** still work the same — shared across all requests.
+* Request-specific data is held inside reactive types like `Mono<T>` or `Flux<T>`, created per call.
+* **Massive concurrency** (e.g., 100k requests/sec) becomes possible on **small thread count**.
+
+---

@@ -1,0 +1,14 @@
+[
+	{
+		"type": "Bike",
+		"holderName": "Yamaha R15",
+		"company": "Acko Insurance",
+		"expiryDate": "2025-03-08"
+	},
+	{
+		"type": "Bike",
+		"holderName": "Hero Motocorp Passion Xpro",
+		"company": "Acko Insurance",
+		"expiryDate": "2025-04-02"
+	}
+]

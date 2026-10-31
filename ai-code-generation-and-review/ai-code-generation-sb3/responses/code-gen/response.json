@@ -1,0 +1,147 @@
+eg1
+
+URL : localhost:8080/api/code/complete
+
+req bdy 
+{
+  "code": "Convert the input string to uppercase",
+  "language": "Java"
+}
+
+
+Response:
+
+
+Here is the complete Java code that converts an input string to uppercase:
+
+import java.util.Scanner;
+
+public class UppercaseConverter {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter a string: ");
+        String inputString = scanner.nextLine();
+        
+        // Convert the input string to uppercase
+        String uppercaseString = inputString.toUpperCase();
+        
+        System.out.println("Uppercase conversion: " + uppercaseString);
+    }
+}
+
+Here's an explanation of the code:
+
+1. We import the `Scanner` class from the Java standard library, which allows us to read user input.
+2. In the `main` method, we create a `Scanner` object and prompt the user to enter a string using `System.out.print()`.
+3. We use the `nextLine()` method of the `Scanner` object to read the user's input as a string.
+4. We convert the input string to uppercase using the `toUpperCase()` method, which is built into the Java `String` class.
+5. Finally, we print the uppercase conversion to the console using `System.out.println()`.
+
+
+
+
+
+
+eg2
+
+{
+    "code": "Write a Spring Boot service that consumes messages from a Kafka topic called 'order-events', processes the data, and saves it to a PostgreSQL database table 'orders' with columns 'id', 'customer_name', and 'order_amount'.",
+    "language": "Java"
+  }
+
+  
+
+  Here's an example of how you can create a Spring Boot service that consumes messages from a Kafka topic, processes the data, and saves it to a PostgreSQL database:
+
+Firstly, add the necessary dependencies to your `pom.xml` file (if you're using Maven) or `build.gradle` file (if you're using Gradle):
+
+Maven:
+```xml
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-kafka</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+    </dependency>
+</dependencies>
+```
+
+Gradle:
+```groovy
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-kafka'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'com.google.code.gson:gson'
+}
+```
+
+Now, create a Spring Boot service that consumes messages from the Kafka topic and processes them:
+
+```java
+@Service
+public class OrderService {
+
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    public void consumeOrderEvents() {
+        kafkaTemplate.consume("order-events", new ConsumerCallback() {
+            @Override
+            public void onMessage(String topicPartition, long offset, String message) {
+                Order order = gson.fromJson(message, Order.class);
+                // Process the order data here (e.g., validate customer name and amount)
+                saveOrderToDatabase(order);
+            }
+        });
+    }
+
+    private void saveOrderToDatabase(Order order) {
+        String sql = "INSERT INTO orders (id, customer_name, order_amount) VALUES (?, ?, ?)";
+        jdbcTemplate.update(sql, new Object[]{order.getId(), order.getCustomerName(), order.getOrderAmount()});
+    }
+}
+
+class Order {
+    private Long id;
+    private String customerName;
+    private Double orderAmount;
+
+    // Getters and setters
+}
+```
+
+In this code:
+
+1.  We create a `OrderService` class that uses Spring Boot's Kafka template to consume messages from the 'order-events' topic.
+2.  In the `consumeOrderEvents()` method, we process each message by converting it into an `Order` object using Gson and then save it to the database using JdbcTemplate.
+3.  We create a simple `Order` class with getter and setter methods for its properties (id, customerName, and orderAmount).
+
+To run this service, you can use Spring Boot's `main()` method:
+
+```java
+public static void main(String[] args) {
+    SpringApplication.run(OrderService.class, args);
+}
+```
+
+This code assumes that you have a PostgreSQL database set up with a table named 'orders' having columns 'id', 'customer_name', and 'order_amount'. You'll also need to configure your Kafka broker's connection settings in the `application.properties` file:
+
+```properties
+spring:
+  kafka:
+    bootstrap-servers: <your-kafka-broker>:9092
+    key-deserializer: org.springframework.kafka.support.serializer.StringDeserializer
+    value-deserializer: org.springframework.kafka.support.serializer.StringDeserializer
+```
+
+Replace `<your-kafka-broker>` with the hostname or IP address of your Kafka broker.
