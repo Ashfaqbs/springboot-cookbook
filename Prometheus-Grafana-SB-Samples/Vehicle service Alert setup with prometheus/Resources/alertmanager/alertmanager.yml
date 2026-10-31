@@ -1,0 +1,63 @@
+# Web hook configuration for Alertmanager: 
+# route:
+#   group_by: ['alertname']
+#   group_wait: 30s
+#   group_interval: 5m
+#   repeat_interval: 1h
+#   receiver: 'web.hook'
+# receivers:
+#   - name: 'web.hook'
+#     webhook_configs:
+#       - url: 'http://127.0.0.1:5001/'
+# inhibit_rules:
+#   - source_match:
+#       severity: 'critical'
+#     target_match:
+#       severity: 'warning'
+#     equal: ['alertname', 'dev', 'instance']
+
+
+
+# # Mail alert Configuration template: 
+# # Values should be in single quotes and from can be any name.
+
+# global:
+#   smtp_smarthost: 'localhost:25'
+#   smtp_from: 'Alertmanager@example.com'
+#   smtp_auth_username: ''
+#   smtp_auth_password: ''
+#   smtp_require_tls: false  #Add this line to disable TLS requirement i,e http
+  
+
+# # email will work for  outlook as well.
+# route:
+#   receiver: 'email'
+#   repeat_interval: 1h #Resend notification after 1 hour
+
+
+# # Receivers configuration 
+# receivers:
+# - name: 'email'
+#   email_configs:
+#   - to: 'admin@example.com'
+
+
+
+# google mail sample  
+
+global:
+  smtp_smarthost: 'smtp.gmail.com:587'  # Gmail SMTP server and port for TLS
+  smtp_from: 'alertManagermail@mail.com'  # Your Gmail address
+  smtp_auth_username: 'ash001x@gmail.com'  # Your Gmail address
+  smtp_auth_password: 'gxhz jmqc cbbj olrm'  # Your Gmail password
+  smtp_require_tls: true  # Enable TLS for secure connection
+
+route:
+  receiver: 'email'
+  repeat_interval: 1h  # Resend notification after 1 hour
+
+receivers:
+  - name: 'email'
+    email_configs:
+      - to: 'ash001x@gmail.com'  # Replace with the recipient's email address
+    

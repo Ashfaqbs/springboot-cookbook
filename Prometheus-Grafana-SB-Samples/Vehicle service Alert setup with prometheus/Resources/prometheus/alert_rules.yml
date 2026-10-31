@@ -1,0 +1,32 @@
+groups:
+  - name: VehicleAPIRules
+    rules:
+      # Alert for total calls exceeding a threshold
+      - alert: HighTotalVehicleApiCalls
+        expr: api_get_vehicle_by_id_total > 10 #for testing 10
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High total calls for getVehicleById API"
+          description: "The getVehicleById API has been called more than 100 times in the last 5 minutes."
+
+      # Alert for high rate of calls per minute
+      - alert: HighRateOfVehicleApiCalls
+        expr: rate(api_get_vehicle_by_id_timer_count[1m]) > 10
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High rate of calls for getVehicleById API"
+          description: "The getVehicleById API call rate is more than 10 requests per minute."
+
+      # Alert for high CPU usage
+      - alert: HighCpuUsage
+        expr: system_cpu_usage{instance="localhost:8222", job="vehicle-service Application"} > 0.5
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High CPU Usage Alert"
+          description: "CPU usage is above 50% on instance 'localhost:8222' for more than 2 minutes."

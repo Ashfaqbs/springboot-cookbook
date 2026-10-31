@@ -1,0 +1,2 @@
+Run the ubuntuscript and copy 
+root@localhost:/# cp /sdcard/Download/SB-TelegramBOT.jar  /root/apps/SB-TelegramBOT.jar

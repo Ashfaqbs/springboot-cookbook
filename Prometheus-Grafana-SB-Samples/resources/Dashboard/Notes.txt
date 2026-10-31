@@ -1,0 +1,6 @@
+Grafana - https://grafana.com/grafana/download?platform=windows
+download link (use zip)- https://dl.grafana.com/enterprise/release/grafana-enterprise-10.1.1.windows-amd64.zip
+Prometheus - https://prometheus.io/ 
+download link (use zip)- https://github.com/prometheus/prometheus/releases/download/v2.47.0-rc.0/prometheus-2.47.0-rc.0.windows-amd64.zip
+
+URL - https://www.youtube.com/watch?v=gJZhdEJvZmc

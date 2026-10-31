@@ -1,0 +1,192 @@
+ sum(rate(http_server_requests_seconds_count{job="my-sb-project-DB", status!="404"}[1m])) by (method) promQL which will give all the http methods count 
+up{job="my-sb-project-DB", instance="localhost:8081"} application status up or not
+
+
+
+go to prometheus , add  this query , or instance
+{job="my-sb-project-DB"}
+
+you will get this 
+application_ready_time_seconds{instance="localhost:8081", job="my-sb-project-DB", main_application_class="com.main.prometheus.SpringBootPrometheusXgrafana2Application"}
+application_started_time_seconds{instance="localhost:8081", job="my-sb-project-DB", main_application_class="com.main.prometheus.SpringBootPrometheusXgrafana2Application"}
+disk_free_bytes{instance="localhost:8081", job="my-sb-project-DB", path="C:\Users\Ashfaq PC\eclipse-workspace\spring-boot-prometheusXgrafana-2\."}
+disk_total_bytes{instance="localhost:8081", job="my-sb-project-DB", path="C:\Users\Ashfaq PC\eclipse-workspace\spring-boot-prometheusXgrafana-2\."}
+executor_active_threads{instance="localhost:8081", job="my-sb-project-DB", name="applicationTaskExecutor"}
+executor_completed_tasks_total{instance="localhost:8081", job="my-sb-project-DB", name="applicationTaskExecutor"}
+executor_pool_core_threads{instance="localhost:8081", job="my-sb-project-DB", name="applicationTaskExecutor"}
+executor_pool_max_threads{instance="localhost:8081", job="my-sb-project-DB", name="applicationTaskExecutor"}
+executor_pool_size_threads{instance="localhost:8081", job="my-sb-project-DB", name="applicationTaskExecutor"}
+executor_queue_remaining_tasks{instance="localhost:8081", job="my-sb-project-DB", name="applicationTaskExecutor"}
+executor_queued_tasks{instance="localhost:8081", job="my-sb-project-DB", name="applicationTaskExecutor"}
+hikaricp_connections{instance="localhost:8081", job="my-sb-project-DB", pool="HikariPool-41"}
+hikaricp_connections_acquire_seconds_count{instance="localhost:8081", job="my-sb-project-DB", pool="HikariPool-41"}
+hikaricp_connections_acquire_seconds_max{instance="localhost:8081", job="my-sb-project-DB", pool="HikariPool-41"}
+hikaricp_connections_acquire_seconds_sum{instance="localhost:8081", job="my-sb-project-DB", pool="HikariPool-41"}
+hikaricp_connections_active{instance="localhost:8081", job="my-sb-project-DB", pool="HikariPool-41"}
+hikaricp_connections_creation_seconds_count{instance="localhost:8081", job="my-sb-project-DB", pool="HikariPool-41"}
+hikaricp_connections_creation_seconds_max{instance="localhost:8081", job="my-sb-project-DB", pool="HikariPool-41"}
+hikaricp_connections_creation_seconds_sum{instance="localhost:8081", job="my-sb-project-DB", pool="HikariPool-41"}
+hikaricp_connections_idle{instance="localhost:8081", job="my-sb-project-DB", pool="HikariPool-41"}
+hikaricp_connections_max{instance="localhost:8081", job="my-sb-project-DB", pool="HikariPool-41"}
+hikaricp_connections_min{instance="localhost:8081", job="my-sb-project-DB", pool="HikariPool-41"}
+hikaricp_connections_pending{instance="localhost:8081", job="my-sb-project-DB", pool="HikariPool-41"}
+hikaricp_connections_timeout_total{instance="localhost:8081", job="my-sb-project-DB", pool="HikariPool-41"}
+hikaricp_connections_usage_seconds_count{instance="localhost:8081", job="my-sb-project-DB", pool="HikariPool-41"}
+hikaricp_connections_usage_seconds_max{instance="localhost:8081", job="my-sb-project-DB", pool="HikariPool-41"}
+hikaricp_connections_usage_seconds_sum{instance="localhost:8081", job="my-sb-project-DB", pool="HikariPool-41"}
+http_server_requests_seconds_count{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="GET", outcome="SUCCESS", status="200", uri="/actuator"}
+http_server_requests_seconds_count{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="GET", outcome="SUCCESS", status="200", uri="/actuator/prometheus"}
+http_server_requests_seconds_count{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="GET", outcome="SUCCESS", status="200", uri="/api/getCycle/{id}"}
+http_server_requests_seconds_count{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="GET", outcome="SUCCESS", status="200", uri="/api/getCycles"}
+http_server_requests_seconds_count{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="GET", outcome="SUCCESS", status="200", uri="/api/getCyclesByBrand/{brand}"}
+http_server_requests_seconds_count{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="POST", outcome="SUCCESS", status="200", uri="/api/addCycle"}
+http_server_requests_seconds_count{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="PUT", outcome="SUCCESS", status="200", uri="/api/addCycle/{id}"}
+http_server_requests_seconds_max{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="GET", outcome="SUCCESS", status="200", uri="/actuator"}
+http_server_requests_seconds_max{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="GET", outcome="SUCCESS", status="200", uri="/actuator/prometheus"}
+http_server_requests_seconds_max{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="GET", outcome="SUCCESS", status="200", uri="/api/getCycle/{id}"}
+http_server_requests_seconds_max{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="GET", outcome="SUCCESS", status="200", uri="/api/getCycles"}
+http_server_requests_seconds_max{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="GET", outcome="SUCCESS", status="200", uri="/api/getCyclesByBrand/{brand}"}
+http_server_requests_seconds_max{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="POST", outcome="SUCCESS", status="200", uri="/api/addCycle"}
+http_server_requests_seconds_max{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="PUT", outcome="SUCCESS", status="200", uri="/api/addCycle/{id}"}
+http_server_requests_seconds_sum{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="GET", outcome="SUCCESS", status="200", uri="/actuator"}
+http_server_requests_seconds_sum{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="GET", outcome="SUCCESS", status="200", uri="/actuator/prometheus"}
+http_server_requests_seconds_sum{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="GET", outcome="SUCCESS", status="200", uri="/api/getCycle/{id}"}
+http_server_requests_seconds_sum{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="GET", outcome="SUCCESS", status="200", uri="/api/getCycles"}
+http_server_requests_seconds_sum{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="GET", outcome="SUCCESS", status="200", uri="/api/getCyclesByBrand/{brand}"}
+http_server_requests_seconds_sum{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="POST", outcome="SUCCESS", status="200", uri="/api/addCycle"}
+http_server_requests_seconds_sum{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="PUT", outcome="SUCCESS", status="200", uri="/api/addCycle/{id}"}
+jdbc_connections_max{instance="localhost:8081", job="my-sb-project-DB", name="dataSource"}
+jdbc_connections_min{instance="localhost:8081", job="my-sb-project-DB", name="dataSource"}
+jvm_buffer_count_buffers{id="direct", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_buffer_count_buffers{id="mapped", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_buffer_count_buffers{id="mapped - 'non-volatile memory'", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_buffer_memory_used_bytes{id="direct", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_buffer_memory_used_bytes{id="mapped", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_buffer_memory_used_bytes{id="mapped - 'non-volatile memory'", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_buffer_total_capacity_bytes{id="direct", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_buffer_total_capacity_bytes{id="mapped", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_buffer_total_capacity_bytes{id="mapped - 'non-volatile memory'", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_classes_loaded_classes{instance="localhost:8081", job="my-sb-project-DB"}
+jvm_classes_unloaded_classes_total{instance="localhost:8081", job="my-sb-project-DB"}
+jvm_gc_live_data_size_bytes{instance="localhost:8081", job="my-sb-project-DB"}
+jvm_gc_max_data_size_bytes{instance="localhost:8081", job="my-sb-project-DB"}
+jvm_gc_memory_allocated_bytes_total{instance="localhost:8081", job="my-sb-project-DB"}
+jvm_gc_memory_promoted_bytes_total{instance="localhost:8081", job="my-sb-project-DB"}
+jvm_gc_overhead_percent{instance="localhost:8081", job="my-sb-project-DB"}
+jvm_gc_pause_seconds_count{action="end of minor GC", cause="G1 Evacuation Pause", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_gc_pause_seconds_max{action="end of minor GC", cause="G1 Evacuation Pause", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_gc_pause_seconds_sum{action="end of minor GC", cause="G1 Evacuation Pause", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_memory_committed_bytes{area="heap", id="G1 Eden Space", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_memory_committed_bytes{area="heap", id="G1 Old Gen", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_memory_committed_bytes{area="heap", id="G1 Survivor Space", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_memory_committed_bytes{area="nonheap", id="CodeCache", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_memory_committed_bytes{area="nonheap", id="Compressed Class Space", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_memory_committed_bytes{area="nonheap", id="Metaspace", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_memory_max_bytes{area="heap", id="G1 Eden Space", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_memory_max_bytes{area="heap", id="G1 Old Gen", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_memory_max_bytes{area="heap", id="G1 Survivor Space", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_memory_max_bytes{area="nonheap", id="CodeCache", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_memory_max_bytes{area="nonheap", id="Compressed Class Space", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_memory_max_bytes{area="nonheap", id="Metaspace", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_memory_usage_after_gc_percent{area="heap", instance="localhost:8081", job="my-sb-project-DB", pool="long-lived"}
+jvm_memory_used_bytes{area="heap", id="G1 Eden Space", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_memory_used_bytes{area="heap", id="G1 Old Gen", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_memory_used_bytes{area="heap", id="G1 Survivor Space", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_memory_used_bytes{area="nonheap", id="CodeCache", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_memory_used_bytes{area="nonheap", id="Compressed Class Space", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_memory_used_bytes{area="nonheap", id="Metaspace", instance="localhost:8081", job="my-sb-project-DB"}
+jvm_threads_daemon_threads{instance="localhost:8081", job="my-sb-project-DB"}
+jvm_threads_live_threads{instance="localhost:8081", job="my-sb-project-DB"}
+jvm_threads_peak_threads{instance="localhost:8081", job="my-sb-project-DB"}
+jvm_threads_states_threads{instance="localhost:8081", job="my-sb-project-DB", state="blocked"}
+jvm_threads_states_threads{instance="localhost:8081", job="my-sb-project-DB", state="new"}
+jvm_threads_states_threads{instance="localhost:8081", job="my-sb-project-DB", state="runnable"}
+jvm_threads_states_threads{instance="localhost:8081", job="my-sb-project-DB", state="terminated"}
+jvm_threads_states_threads{instance="localhost:8081", job="my-sb-project-DB", state="timed-waiting"}
+jvm_threads_states_threads{instance="localhost:8081", job="my-sb-project-DB", state="waiting"}
+logback_events_total{instance="localhost:8081", job="my-sb-project-DB", level="debug"}
+logback_events_total{instance="localhost:8081", job="my-sb-project-DB", level="error"}
+logback_events_total{instance="localhost:8081", job="my-sb-project-DB", level="info"}
+logback_events_total{instance="localhost:8081", job="my-sb-project-DB", level="trace"}
+logback_events_total{instance="localhost:8081", job="my-sb-project-DB", level="warn"}
+process_cpu_usage{instance="localhost:8081", job="my-sb-project-DB"}
+process_start_time_seconds{instance="localhost:8081", job="my-sb-project-DB"}
+process_uptime_seconds{instance="localhost:8081", job="my-sb-project-DB"}
+scrape_duration_seconds{instance="localhost:8081", job="my-sb-project-DB"}
+scrape_samples_post_metric_relabeling{instance="localhost:8081", job="my-sb-project-DB"}
+scrape_samples_scraped{instance="localhost:8081", job="my-sb-project-DB"}
+scrape_series_added{instance="localhost:8081", job="my-sb-project-DB"}
+spring_data_repository_invocations_seconds_count{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="findAll", repository="CycleDAO", state="SUCCESS"}
+spring_data_repository_invocations_seconds_count{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="findByCyclebrand", repository="CycleDAO", state="SUCCESS"}
+spring_data_repository_invocations_seconds_count{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="findById", repository="CycleDAO", state="SUCCESS"}
+spring_data_repository_invocations_seconds_count{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="save", repository="CycleDAO", state="SUCCESS"}
+spring_data_repository_invocations_seconds_max{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="findAll", repository="CycleDAO", state="SUCCESS"}
+spring_data_repository_invocations_seconds_max{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="findByCyclebrand", repository="CycleDAO", state="SUCCESS"}
+spring_data_repository_invocations_seconds_max{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="findById", repository="CycleDAO", state="SUCCESS"}
+spring_data_repository_invocations_seconds_max{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="save", repository="CycleDAO", state="SUCCESS"}
+spring_data_repository_invocations_seconds_sum{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="findAll", repository="CycleDAO", state="SUCCESS"}
+spring_data_repository_invocations_seconds_sum{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="findByCyclebrand", repository="CycleDAO", state="SUCCESS"}
+spring_data_repository_invocations_seconds_sum{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="findById", repository="CycleDAO", state="SUCCESS"}
+spring_data_repository_invocations_seconds_sum{exception="None", instance="localhost:8081", job="my-sb-project-DB", method="save", repository="CycleDAO", state="SUCCESS"}
+system_cpu_count{instance="localhost:8081", job="my-sb-project-DB"}
+system_cpu_usage{instance="localhost:8081", job="my-sb-project-DB"}
+tomcat_sessions_active_current_sessions{instance="localhost:8081", job="my-sb-project-DB"}
+tomcat_sessions_active_max_sessions{instance="localhost:8081", job="my-sb-project-DB"}
+tomcat_sessions_alive_max_seconds{instance="localhost:8081", job="my-sb-project-DB"}
+tomcat_sessions_created_sessions_total{instance="localhost:8081", job="my-sb-project-DB"}
+tomcat_sessions_expired_sessions_total{instance="localhost:8081", job="my-sb-project-DB"}
+tomcat_sessions_rejected_sessions_total{instance="localhost:8081", job="my-sb-project-DB"}
+up{instance="localhost:8081", job="my-sb-project-DB"} see this and tell me which and all are important  ot be added in dasboard
+
+
+
+
+
+
+
+
+From this query which and all are imp explained below for dashboard
+
+When creating a dashboard for monitoring your Spring Boot application with Prometheus and Grafana, it's important to choose metrics that are relevant to your specific monitoring needs and objectives. The choice of which metrics to include can vary depending on what aspects of your application and infrastructure you want to keep an eye on.
+
+That said, here are some key metrics from your list that are commonly useful for monitoring a Spring Boot application:
+
+Application Health Metrics:
+
+application_ready_time_seconds and application_started_time_seconds: These metrics show when your application became ready and started.
+Resource Utilization Metrics:
+
+process_cpu_usage: Monitors CPU usage of the application process.
+system_cpu_count and system_cpu_usage: These metrics provide information about the system's CPU.
+Memory Metrics:
+
+Memory metrics are essential for detecting memory-related issues.
+JVM memory metrics like jvm_memory_used_bytes and jvm_memory_max_bytes can be used to monitor heap memory usage.
+jvm_threads_live_threads, jvm_threads_peak_threads, and jvm_threads_states_threads provide insights into thread usage.
+Database Connection Pool Metrics:
+
+hikaricp_connections_active, hikaricp_connections_idle, and others related to HikariCP connection pooling can be crucial if your application interacts with a database.
+HTTP Request Metrics:
+
+http_server_requests_seconds_count, http_server_requests_seconds_max, and http_server_requests_seconds_sum: These metrics provide information about incoming HTTP requests, their response times, and counts.
+Grafana and Prometheus Metrics:
+
+scrape_duration_seconds, scrape_samples_post_metric_relabeling, scrape_samples_scraped, and scrape_series_added: These metrics provide insights into how Prometheus is scraping and collecting data.
+Thread Pool Metrics (if using Spring's ThreadPoolTaskExecutor):
+
+Metrics related to your thread pool, such as executor_active_threads, executor_completed_tasks_total, and others, can be valuable for understanding task execution and thread utilization.
+Session Metrics (if using Tomcat sessions):
+
+tomcat_sessions_active_current_sessions, tomcat_sessions_active_max_sessions, tomcat_sessions_created_sessions_total, tomcat_sessions_expired_sessions_total, and tomcat_sessions_rejected_sessions_total can be important for session management in web applications.
+Log Metrics (optional):
+
+Metrics related to log levels like logback_events_total can be useful for monitoring and alerting on log events.
+Uptime and System Information:
+
+process_start_time_seconds, process_uptime_seconds, and up can provide information about the uptime and availability of your application.
+Remember, it's crucial to tailor your dashboard to your specific monitoring goals and application characteristics. Depending on your use case, you may want to focus on certain metrics more than others. Additionally, you can create visualizations and set up alerts based on these metrics to efficiently monitor and respond to issues in your Spring Boot application.
+
+
+
+PROMql queires 
+rate(logback_events_total{instance="localhost:8081", level="error"}[5m]) for log or graph in prmetheus and for dashboard rate(logback_events_total{instance=~"$instance", application="$application", level="error"}[5m]) level can be what ever u want to display 
